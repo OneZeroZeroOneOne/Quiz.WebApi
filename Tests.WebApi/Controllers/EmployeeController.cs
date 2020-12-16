@@ -44,6 +44,7 @@ namespace Tests.WebApi.Controllers
         [Authorize(Policy = "ClientAdmin")]
         public async Task<List<OutEmployeeViewModel>> GetEmployees()
         {
+
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
             List<Employee> emps = await _employeeService.GetEmployees(authorizedUserModel.Id);
             if (emps != null)
@@ -58,6 +59,7 @@ namespace Tests.WebApi.Controllers
         [Authorize(Policy = "ClientAdmin")]
         public async Task<OutEmployeeViewModel> AddEmployee(InEmployeeViewModel employeeInViewModel)
         {
+
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
             Employee newEmp = _mapperProfile.Map<Employee>(employeeInViewModel);
             await _employeeService.AddEmployee(newEmp, authorizedUserModel.Id);
