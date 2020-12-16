@@ -50,7 +50,7 @@ namespace Tests.WebApi.Controllers
             {
                 return _mapperProfile.Map<List<OutEmployeeViewModel>>(emps);
             }
-            return null;
+            return new List<OutEmployeeViewModel>();
             
         }
 
