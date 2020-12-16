@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: wget "https://raw.githubusercontent.com/OneZeroZeroOneOne/Tests.WebApi/master/service-check-webapi" -O "/root/service-check"
+          script: wget "https://raw.githubusercontent.com/OneZeroZeroOneOne/Tests.WebApi/master/service-check-webapi" -O "/root/service-check-webapi"
       - name: Giving rights for service check
         uses: appleboy/ssh-action@master
         with:
