@@ -6,7 +6,7 @@ if [[ $exist == "" ]]
 then
  echo "not exist ${serv}"
  echo "downloading"
- wget "https://raw.githubusercontent.com/OneZeroZeroOneOne/Tests.WebApi/main/Services/${serv}" -P "/etc/systemd/system"
+ wget "https://raw.githubusercontent.com/OneZeroZeroOneOne/Tests.WebApi/master/Services/${serv}" -P "/etc/systemd/system"
  echo "downloaded"
  systemctl enable $serv
  echo "restarting"
