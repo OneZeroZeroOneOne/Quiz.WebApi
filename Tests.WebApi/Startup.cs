@@ -162,7 +162,7 @@ namespace Tests.WebApi
             }
             else
             {
-                var basePath = "/api";
+                var basePath = "/api/management";
                 app.UseSwagger(c => c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
                     swaggerDoc.Servers = new List<OpenApiServer>
