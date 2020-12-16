@@ -44,7 +44,6 @@ namespace Tests.WebApi.Controllers
         [Authorize(Policy = "ClientAdmin")]
         public async Task<List<OutEmployeeViewModel>> GetEmployees()
         {
-
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
             List<Employee> emps = await _employeeService.GetEmployees(authorizedUserModel.Id);
             if (emps != null)
