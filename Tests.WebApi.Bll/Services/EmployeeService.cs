@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Tests.WebApi.Contexts;
 using Tests.WebApi.Dal.Models;
@@ -14,15 +11,12 @@ namespace Tests.WebApi.Bll.Services
 {
     public class EmployeeService
     {
-        public MainContext _context;
-        public QuizService _quizService;
+        private readonly MainContext _context;
 
         public EmployeeService(MainContext context, IMapper mapperProfile)
         {
             _context = context;
-
         }
-
 
         public async Task<Employee> GetEmployee(int empId, int userId)
         {
@@ -34,13 +28,16 @@ namespace Tests.WebApi.Bll.Services
             return null;
         }
 
-        public async Task<List<Employee>> GetEmployees(int userId)
+        public async Task<List<Employee>> GetEmployees(int userId, int? quizStatusId)
         {
+            var userEmployees = _context.UserEmployee.Where(x => x.UserId == userId).Include(x => x.Employee)
+                .ThenInclude(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Status)
+                .Select(x => x.Employee);
 
-            List<Employee> userEmployees = await _context.UserEmployee.Where(x => x.UserId == userId).Include(x => x.Employee).ThenInclude(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Status).Select(x => x.Employee).ToListAsync();
-            return userEmployees;
+            if (quizStatusId != null)
+                userEmployees = userEmployees.Where(x => x.UserQuizzes.Any() && x.UserQuizzes.OrderByDescending(xx => xx.Id).FirstOrDefault().Quiz.StatusId == quizStatusId);
 
-
+            return await userEmployees.ToListAsync();
         }
 
         public async Task<Employee> AddEmployee(Employee newEmp, int userId)
