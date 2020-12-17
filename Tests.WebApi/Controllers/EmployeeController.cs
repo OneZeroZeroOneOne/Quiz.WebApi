@@ -89,7 +89,7 @@ namespace Tests.WebApi.Controllers
         public async Task<OutEmployeeViewModel> EditEmployee(InEmployeeViewModel inEmployeeViewModel, int id)
         {
 
-            if (inEmployeeViewModel.Avatar != null)
+            /*if (inEmployeeViewModel.Avatar != null)
             {
                 if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar) == false)
                 {
@@ -102,7 +102,7 @@ namespace Tests.WebApi.Controllers
                 {
                     throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
                 }
-            }
+            }*/
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
             Employee emp = _mapperProfile.Map<Employee>(inEmployeeViewModel);
             Employee editedEmp = await _employeeService.EditEmployee(emp, id, authorizedUserModel.Id);
