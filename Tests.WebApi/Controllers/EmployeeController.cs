@@ -61,7 +61,7 @@ namespace Tests.WebApi.Controllers
         [Authorize(Policy = "ClientAdmin")]
         public async Task<OutEmployeeViewModel> AddEmployee(InEmployeeViewModel inEmployeeViewModel)
         {
-            if (inEmployeeViewModel.Avatar != null)
+            /*if (inEmployeeViewModel.Avatar != null)
             {
                 if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar.Split("," , 1).LastOrDefault()) == false)
                 {
@@ -74,7 +74,7 @@ namespace Tests.WebApi.Controllers
                 {
                     throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
                 }
-            }
+            }*/
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
             Employee newEmp = _mapperProfile.Map<Employee>(inEmployeeViewModel);
             await _employeeService.AddEmployee(newEmp, authorizedUserModel.Id);
