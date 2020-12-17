@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Tests.WebApi.Contexts;
@@ -62,9 +64,28 @@ namespace Tests.WebApi.Bll.Services
             return newEmployees;
         }
 
-        /*public async Task<Employee> EditEmployee(Employee emp)
+        public async Task<Employee> EditEmployee(Employee editEmp, int empId, int userId)
         {
-            _context.Update()
-        }*/
+            UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId);
+            if (userEmployee != null && userEmployee.UserId == userId)
+            {
+                Employee emp = await _context.Employee.FirstOrDefaultAsync(x => x.Id == empId);
+                emp.FirstName = editEmp.FirstName;
+                emp.MiddleName = editEmp.MiddleName;
+                emp.Phone = editEmp.Phone;
+                emp.Position = editEmp.Position;
+                emp.Resume = editEmp.Resume;
+                emp.Salary = editEmp.Salary;
+                emp.Email = editEmp.Email;
+                emp.DateOfBirth = editEmp.DateOfBirth;
+                emp.Adress = editEmp.Adress;
+                emp.SotialNetworks = editEmp.SotialNetworks;
+                emp.SurName = editEmp.SurName;
+                emp.Avatar = emp.Avatar;
+                await _context.SaveChangesAsync();
+                return emp;
+            }
+            throw ExceptionFactory.SoftException(ExceptionEnum.EditedUserIsNotYours, "Edited user is not yours");
+        }
     }
 }

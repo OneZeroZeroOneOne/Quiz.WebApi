@@ -23,6 +23,8 @@ namespace Tests.WebApi.Contexts
         public virtual DbSet<AnswerTamplate> AnswerTamplate { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<JwtOptions> JwtOptions { get; set; }
+
+        public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<LongevityType> LongevityType { get; set; }
         public virtual DbSet<Question> Question { get; set; }
         public virtual DbSet<QuestionTemplate> QuestionTemplate { get; set; }
@@ -76,9 +78,9 @@ namespace Tests.WebApi.Contexts
             {
                 entity.ToTable("Employee");
 
-                entity.Property(e => e.Email).IsRequired();
-
                 entity.Property(e => e.FirstName).IsRequired();
+
+                entity.Property(e => e.MiddleName).IsRequired();
 
                 entity.Property(e => e.Position).IsRequired();
 
@@ -97,6 +99,15 @@ namespace Tests.WebApi.Contexts
                 entity.ToTable("LongevityType");
 
                 entity.Property(e => e.LongevityMeasureName).IsRequired();
+            });
+
+            modelBuilder.Entity<Position>(entity =>
+            {
+                entity.ToTable("Position");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('positionid_seq'::regclass)");
+
+                entity.Property(e => e.Title).IsRequired();
             });
 
             modelBuilder.Entity<Question>(entity =>
@@ -138,6 +149,7 @@ namespace Tests.WebApi.Contexts
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Quizzes)
                     .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Quiz_StatusId_fkey");
             });
 
@@ -234,16 +246,23 @@ namespace Tests.WebApi.Contexts
 
             modelBuilder.Entity<UserEmployee>(entity =>
             {
+                entity.HasKey(e => new { e.UserId, e.EmployeeId })
+                    .HasName("UserEmployee_pkey");
+
                 entity.ToTable("UserEmployee");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.UserEmployees)
                     .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserEmployee_EmployeeId_fkey");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserEmployees)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserEmployee_UserId_fkey");
             });
 
@@ -288,6 +307,10 @@ namespace Tests.WebApi.Contexts
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserSecurity_UserId_fkey");
             });
+
+            modelBuilder.HasSequence("positionid_seq");
+
+            modelBuilder.HasSequence("PositionId_seq");
 
             OnModelCreatingPartial(modelBuilder);
         }

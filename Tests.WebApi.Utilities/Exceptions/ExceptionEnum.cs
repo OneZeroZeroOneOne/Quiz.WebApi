@@ -12,5 +12,8 @@ namespace Tests.WebApi.Utilities.Exceptions
         Unauthorized = 4,
         EmployeeIsNotYours = 5,
         EmployeeNotFound = 6,
+        AvatarIsNotBase64 = 7,
+        ResumeIsNotBase64 = 8,
+        EditedUserIsNotYours = 9,
     }
 }
