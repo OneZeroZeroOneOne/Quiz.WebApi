@@ -23,11 +23,11 @@ namespace Tests.WebApi.Contexts
         public virtual DbSet<AnswerTamplate> AnswerTamplate { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<JwtOptions> JwtOptions { get; set; }
-
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<LongevityType> LongevityType { get; set; }
         public virtual DbSet<Question> Question { get; set; }
         public virtual DbSet<QuestionTemplate> QuestionTemplate { get; set; }
+        public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<QuestionType> QuestionType { get; set; }
         public virtual DbSet<Quiz> Quiz { get; set; }
         public virtual DbSet<Role> Role { get; set; }

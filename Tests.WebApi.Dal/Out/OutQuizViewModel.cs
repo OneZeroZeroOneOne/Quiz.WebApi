@@ -8,6 +8,7 @@ namespace Tests.WebApi.Dal.Out
     {
         public int Id { get; set; }
         public DateTime CreateDateTime { get; set; }
+        public string AddressKey { get; set; }
         public OutStatusViewModel Status { get; set; }
     }
 }

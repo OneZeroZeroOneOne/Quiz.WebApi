@@ -15,5 +15,7 @@ namespace Tests.WebApi.Utilities.Exceptions
         AvatarIsNotBase64 = 7,
         ResumeIsNotBase64 = 8,
         EditedUserIsNotYours = 9,
+        SubscriptionNotFound = 10,
+        ExceededMaximumTests = 11,
     }
 }

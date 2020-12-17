@@ -17,6 +17,7 @@ namespace Tests.WebApi.Dal.Models
         public int Id { get; set; }
         public DateTime CreateDateTime { get; set; }
         public int StatusId { get; set; }
+        public string AddressKey { get; set; }
 
         public virtual Status Status { get; set; }
         public virtual ICollection<Question> Questions { get; set; }

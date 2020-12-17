@@ -18,7 +18,7 @@ namespace Tests.WebApi.Dal.Out
         public int Salary { get; set; }
         public string SotialNetworks { get; set; }
         public string Avatar { get; set; }
-        public string Adress { get; set; }
+        public string Address { get; set; }
         public string Resume { get; set; }
         public List<OutQuizViewModel> Quizzes {get; set;}
     }

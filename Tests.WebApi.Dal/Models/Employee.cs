@@ -27,6 +27,7 @@ namespace Tests.WebApi.Dal.Models
         public string Avatar { get; set; }
         public string Adress { get; set; }
         public string Resume { get; set; }
+        public bool? IsCandidate { get; set; }
 
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         public virtual ICollection<UserEmployee> UserEmployees { get; set; }

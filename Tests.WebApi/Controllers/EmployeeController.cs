@@ -63,14 +63,14 @@ namespace Tests.WebApi.Controllers
         {
             if (inEmployeeViewModel.Avatar != null)
             {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar) == false)
+                if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar.Split("," , 1).LastOrDefault()) == false)
                 {
                     throw ExceptionFactory.SoftException(ExceptionEnum.AvatarIsNotBase64, "Avatart is not Base64 string");
                 }
             }
             if (inEmployeeViewModel.Resume != null)
             {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Resume) == false)
+                if (Base64Validator.IsBase64String(inEmployeeViewModel.Resume.Split(",", 1).LastOrDefault()) == false)
                 {
                     throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
                 }
@@ -83,7 +83,7 @@ namespace Tests.WebApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPatch]
         [Authorize(Policy = "ClientAdmin")]
         [Route("{id}")]
         public async Task<OutEmployeeViewModel> EditEmployee(InEmployeeViewModel inEmployeeViewModel, int id)

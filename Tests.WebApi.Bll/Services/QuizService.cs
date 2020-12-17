@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Tests.WebApi.Contexts;
 using Tests.WebApi.Dal.Models;
+using Tests.WebApi.Utilities.Exceptions;
 
 namespace Tests.WebApi.Bll.Services
 {
@@ -15,9 +19,42 @@ namespace Tests.WebApi.Bll.Services
         }
 
 
-        public void CreateNewQuiz(Employee emp)
+        public async Task<Quiz> CreateNewQuiz(int empId, int userId)
         {
+            UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId && x.UserId == userId);
+            if (userEmployee == null)
+            {
+                throw ExceptionFactory.SoftException(ExceptionEnum.EmployeeIsNotYours, "Employee is not yours");
+            }
+            DateTime currenttime = DateTime.Now;
+            Subscription subscription = await _context.Subscription.Include(x => x.Type).FirstOrDefaultAsync(x => x.BeginDateTime <= currenttime && x.EndDateTime >= currenttime);
+            if (subscription == null)
+            {
+                throw ExceptionFactory.SoftException(ExceptionEnum.SubscriptionNotFound, "Subscription not found");
+            }
+            int quizzesFromThisSubscriptionCount = await _context.UserQuiz.Include(x => x.Quiz).Where(x => x.UserId == userId).Select(x => x.Quiz).Where(x => x.CreateDateTime >= subscription.BeginDateTime && x.CreateDateTime <= subscription.EndDateTime).CountAsync();
+            if (quizzesFromThisSubscriptionCount >= subscription.Type.AvailableTestAmount)
+            {
+                throw ExceptionFactory.SoftException(ExceptionEnum.ExceededMaximumTests, String.Format("Exceeded the maximum number of tests for the current subscription, SubscriptionId={0}", subscription.Id));
+            }
+            string guid = Guid.NewGuid().ToString();
+            guid = guid.Replace("-", "").Substring(0, 10);
+            Quiz newQuiz = new Quiz() { StatusId = 1, CreateDateTime = currenttime, AddressKey = guid };
+            await _context.Quiz.AddAsync(newQuiz);
+            await _context.SaveChangesAsync();
+            await _context.UserQuiz.AddAsync(new UserQuiz()
+            {
+                QuizId = newQuiz.Id,
+                UserId = userId,
+                EmployeeId = empId,
+            });
+            await _context.SaveChangesAsync();
+            return await _context.Quiz.Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == newQuiz.Id);
+        }
 
+        public async Task<List<Quiz>> GetEmployeeQuizzes(int empId, int userId)
+        {
+            return await _context.UserQuiz.Include(x => x.Quiz).ThenInclude(x => x.Status).Where(x => x.UserId == userId && x.EmployeeId == empId).Select(x => x.Quiz).ToListAsync();
         }
     }
 }
