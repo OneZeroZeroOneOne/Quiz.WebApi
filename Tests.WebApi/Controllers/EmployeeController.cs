@@ -59,24 +59,24 @@ namespace Tests.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = "ClientAdmin")]
-        public async Task<OutEmployeeViewModel> AddEmployee(InEmployeeViewModel employeeInViewModel)
+        public async Task<OutEmployeeViewModel> AddEmployee(InEmployeeViewModel inEmployeeViewModel)
         {
-            if (employeeInViewModel.Avatar != null && Base64Validator.IsBase64String(employeeInViewModel.Avatar) == true)
+            if (inEmployeeViewModel.Avatar != null)
             {
+                if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar) == false)
+                {
+                    throw ExceptionFactory.SoftException(ExceptionEnum.AvatarIsNotBase64, "Avatart is not Base64 string");
+                }
             }
-            else
+            if (inEmployeeViewModel.Resume != null)
             {
-                throw ExceptionFactory.SoftException(ExceptionEnum.AvatarIsNotBase64, "Avatart is not Base64 string");
-            }
-            if (employeeInViewModel.Resume != null && Base64Validator.IsBase64String(employeeInViewModel.Resume) == true)
-            {
-            }
-            else
-            {
-                throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
+                if (Base64Validator.IsBase64String(inEmployeeViewModel.Resume) == false)
+                {
+                    throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
+                }
             }
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
-            Employee newEmp = _mapperProfile.Map<Employee>(employeeInViewModel);
+            Employee newEmp = _mapperProfile.Map<Employee>(inEmployeeViewModel);
             await _employeeService.AddEmployee(newEmp, authorizedUserModel.Id);
             return _mapperProfile.Map<OutEmployeeViewModel>(newEmp);
 
