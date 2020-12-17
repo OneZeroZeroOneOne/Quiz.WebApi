@@ -81,7 +81,7 @@ namespace Tests.WebApi.Bll.Services
                 emp.Adress = editEmp.Adress;
                 emp.SotialNetworks = editEmp.SotialNetworks;
                 emp.SurName = editEmp.SurName;
-                emp.Avatar = emp.Avatar;
+                emp.Avatar = editEmp.Avatar;
                 await _context.SaveChangesAsync();
                 return emp;
             }
