@@ -12,10 +12,12 @@ namespace Tests.WebApi.Bll.Services
     public class EmployeeService
     {
         private readonly MainContext _context;
+        private readonly IMapper _mapper;
 
-        public EmployeeService(MainContext context, IMapper mapperProfile)
+        public EmployeeService(MainContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Employee> GetEmployee(int empId, int userId)
@@ -54,35 +56,18 @@ namespace Tests.WebApi.Bll.Services
             return newEmp;
         }
 
-        public async Task<List<Employee>> AddEmployees(List<Employee> newEmployees)
-        {
-            await _context.Employee.AddRangeAsync(newEmployees);
-            await _context.SaveChangesAsync();
-            return newEmployees;
-        }
-
         public async Task<Employee> EditEmployee(Employee editEmp, int empId, int userId)
         {
             UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId);
-            if (userEmployee != null && userEmployee.UserId == userId)
-            {
-                Employee emp = await _context.Employee.FirstOrDefaultAsync(x => x.Id == empId);
-                emp.FirstName = editEmp.FirstName;
-                emp.MiddleName = editEmp.MiddleName;
-                emp.Phone = editEmp.Phone;
-                emp.Position = editEmp.Position;
-                emp.Resume = editEmp.Resume;
-                emp.Salary = editEmp.Salary;
-                emp.Email = editEmp.Email;
-                emp.DateOfBirth = editEmp.DateOfBirth;
-                emp.Adress = editEmp.Adress;
-                emp.SotialNetworks = editEmp.SotialNetworks;
-                emp.SurName = editEmp.SurName;
-                emp.Avatar = editEmp.Avatar;
-                await _context.SaveChangesAsync();
-                return emp;
-            }
-            throw ExceptionFactory.SoftException(ExceptionEnum.EditedUserIsNotYours, "Edited user is not yours");
+            if (userEmployee == null || userEmployee.UserId != userId)
+                throw ExceptionFactory.SoftException(ExceptionEnum.EditedUserIsNotYours, "Edited user is not yours");
+            
+            Employee emp = await _context.Employee.FirstOrDefaultAsync(x => x.Id == empId);
+
+            _mapper.Map(editEmp, emp);
+
+            await _context.SaveChangesAsync();
+            return emp;
         }
     }
 }
