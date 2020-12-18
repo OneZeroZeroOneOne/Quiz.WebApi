@@ -10,7 +10,7 @@ using Tests.WebApi.Dal.Models;
 
 namespace Tests.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AvatarController : ControllerBase
     {

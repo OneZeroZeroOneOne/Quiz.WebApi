@@ -75,8 +75,8 @@ namespace Tests.WebApi.Bll.Services
 
         public async Task<Employee> EditEmployee(Employee editEmp, int empId, int userId)
         {
-            UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId);
-            if (userEmployee == null || userEmployee.UserId != userId)
+            UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId && x.UserId == userId);
+            if (userEmployee == null)
                 throw ExceptionFactory.SoftException(ExceptionEnum.EditedUserIsNotYours, "Edited user is not yours");
 
             var avatar = await _context.Avatar.FirstOrDefaultAsync(x => x.Id == editEmp.AvatarId);
