@@ -20,20 +20,27 @@ namespace Tests.WebApi.Bll.Services
             _mapper = mapper;
         }
 
-        public async Task<Employee> GetEmployee(int empId, int userId)
+        public async Task<Employee?> GetEmployee(int empId, int userId)
         {
             UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId);
             if (userEmployee != null && userEmployee.UserId == userId)
             {
-                return await _context.Employee.Include(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Status).Include(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Questions).ThenInclude(x => x.UserAnswers).FirstOrDefaultAsync(x => x.Id == empId);
+                return await _context.Employee.Include(x => x.UserQuizzes).ThenInclude(x => x.Quiz)
+                    .ThenInclude(x => x.Status).Include(x => x.UserQuizzes).ThenInclude(x => x.Quiz)
+                    .ThenInclude(x => x.Questions).ThenInclude(x => x.UserAnswers)
+                    .Include(x => x.Avatar)
+                    .FirstOrDefaultAsync(x => x.Id == empId);
             }
             return null;
         }
 
         public async Task<List<Employee>> GetEmployees(int userId, int? quizStatusId)
         {
-            var userEmployees = _context.UserEmployee.Where(x => x.UserId == userId).Include(x => x.Employee)
+            var userEmployees = _context.UserEmployee
+                .Where(x => x.UserId == userId)
+                .Include(x => x.Employee)
                 .ThenInclude(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Status)
+                .Include(x => x.Employee.Avatar)
                 .Select(x => x.Employee);
 
             if (quizStatusId != null)
@@ -44,15 +51,25 @@ namespace Tests.WebApi.Bll.Services
 
         public async Task<Employee> AddEmployee(Employee newEmp, int userId)
         {
+            var avatar = await _context.Avatar.FirstOrDefaultAsync(x => x.Id == newEmp.AvatarId);
+
+            if (avatar == null)
+                throw ExceptionFactory.SoftException(ExceptionEnum.AvatarRecordDoesntExist, "");
+
             await _context.Employee.AddAsync(newEmp);
             await _context.SaveChangesAsync();
+
             UserEmployee ue = new UserEmployee()
             {
                 UserId = userId,
                 EmployeeId = newEmp.Id,
             };
+
             await _context.UserEmployee.AddAsync(ue);
             await _context.SaveChangesAsync();
+
+            newEmp.Avatar = avatar;
+
             return newEmp;
         }
 
@@ -61,12 +78,18 @@ namespace Tests.WebApi.Bll.Services
             UserEmployee userEmployee = await _context.UserEmployee.FirstOrDefaultAsync(x => x.EmployeeId == empId);
             if (userEmployee == null || userEmployee.UserId != userId)
                 throw ExceptionFactory.SoftException(ExceptionEnum.EditedUserIsNotYours, "Edited user is not yours");
-            
-            Employee emp = await _context.Employee.FirstOrDefaultAsync(x => x.Id == empId);
+
+            var avatar = await _context.Avatar.FirstOrDefaultAsync(x => x.Id == editEmp.AvatarId);
+
+            if (avatar == null)
+                throw ExceptionFactory.SoftException(ExceptionEnum.AvatarRecordDoesntExist, "");
+
+            Employee emp = await _context.Employee.Include(x => x.Avatar).FirstOrDefaultAsync(x => x.Id == empId);
 
             _mapper.Map(editEmp, emp);
 
             await _context.SaveChangesAsync();
+
             return emp;
         }
     }

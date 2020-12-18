@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tests.WebApi.Utilities.Exceptions
+﻿namespace Tests.WebApi.Utilities.Exceptions
 {
     public enum ExceptionEnum
     {
@@ -17,5 +13,6 @@ namespace Tests.WebApi.Utilities.Exceptions
         EditedUserIsNotYours = 9,
         SubscriptionNotFound = 10,
         ExceededMaximumTests = 11,
+        AvatarRecordDoesntExist = 12,
     }
 }

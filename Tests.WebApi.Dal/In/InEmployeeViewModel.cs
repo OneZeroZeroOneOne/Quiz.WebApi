@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tests.WebApi.Dal.In
 {
@@ -15,7 +13,7 @@ namespace Tests.WebApi.Dal.In
         public string Phone { get; set; }
         public int Salary { get; set; }
         public string SotialNetworks { get; set; }
-        public string Avatar { get; set; }
+        public int? AvatarId { get; set; }
         public string Adress { get; set; }
         public string Resume { get; set; }
 

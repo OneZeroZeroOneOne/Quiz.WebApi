@@ -1,19 +1,13 @@
-﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tests.WebApi.Bll.Authorization;
 using Tests.WebApi.Bll.Services;
 using Tests.WebApi.Dal.In;
 using Tests.WebApi.Dal.Models;
 using Tests.WebApi.Dal.Out;
-using Tests.WebApi.Utilities.Exceptions;
-using Tests.WebApi.Utilities.Validation;
 
 namespace Tests.WebApi.Controllers
 {
@@ -61,25 +55,12 @@ namespace Tests.WebApi.Controllers
         [Authorize(Policy = "ClientAdmin")]
         public async Task<OutEmployeeViewModel> AddEmployee(InEmployeeViewModel inEmployeeViewModel)
         {
-            /*if (inEmployeeViewModel.Avatar != null)
-            {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar.Split("," , 1).LastOrDefault()) == false)
-                {
-                    throw ExceptionFactory.SoftException(ExceptionEnum.AvatarIsNotBase64, "Avatart is not Base64 string");
-                }
-            }
-            if (inEmployeeViewModel.Resume != null)
-            {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Resume.Split(",", 1).LastOrDefault()) == false)
-                {
-                    throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
-                }
-            }*/
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
+
             Employee newEmp = _mapperProfile.Map<Employee>(inEmployeeViewModel);
             await _employeeService.AddEmployee(newEmp, authorizedUserModel.Id);
-            return _mapperProfile.Map<OutEmployeeViewModel>(newEmp);
 
+            return _mapperProfile.Map<OutEmployeeViewModel>(newEmp);
         }
 
 
@@ -88,34 +69,12 @@ namespace Tests.WebApi.Controllers
         [Route("{id}")]
         public async Task<OutEmployeeViewModel> EditEmployee(InEmployeeViewModel inEmployeeViewModel, int id)
         {
-
-            /*if (inEmployeeViewModel.Avatar != null)
-            {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Avatar) == false)
-                {
-                    throw ExceptionFactory.SoftException(ExceptionEnum.AvatarIsNotBase64, "Avatart is not Base64 string");
-                }
-            }
-            if (inEmployeeViewModel.Resume != null)
-            {
-                if (Base64Validator.IsBase64String(inEmployeeViewModel.Resume) == false)
-                {
-                    throw ExceptionFactory.SoftException(ExceptionEnum.ResumeIsNotBase64, "Resume is not Base64 string");
-                }
-            }*/
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
+
             Employee emp = _mapperProfile.Map<Employee>(inEmployeeViewModel);
             Employee editedEmp = await _employeeService.EditEmployee(emp, id, authorizedUserModel.Id);
+
             return _mapperProfile.Map<OutEmployeeViewModel>(editedEmp);
         }
-        /*[HttpDelete]
-        [Authorize(Policy = "ClientAdmin")]
-        public async Task<IActionResult> DeleteEmployee(int id)
-        {
-            AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
-            await _employeeService.DeleteEmployee(id, authorizedUserModel.Id);
-            return Ok();
-
-        }*/
     }
 }

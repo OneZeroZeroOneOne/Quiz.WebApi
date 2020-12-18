@@ -27,11 +27,11 @@ namespace Tests.WebApi.Dal.Models
         public string Adress { get; set; }
         public string Resume { get; set; }
         public bool? IsCandidate { get; set; }
+        public int? AvatarId { get; set; }
 
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         public virtual ICollection<UserEmployee> UserEmployees { get; set; }
         public virtual ICollection<UserQuiz> UserQuizzes { get; set; }
-
-        public virtual AvatarEmployee Avatar { get; set; }
+        public virtual Avatar Avatar { get; set; }
     }
 }

@@ -52,17 +52,6 @@ namespace Tests.WebApi.Dal.Contexts
                 en.HasKey(x => x.Id);
             });
 
-            modelBuilder.Entity<AvatarEmployee>(en =>
-            {
-                en.HasKey(x => new {x.AvatarId, x.EmployeeId});
-
-                en.HasOne(x => x.Employee)
-                    .WithOne(x => x.Avatar);
-
-                en.HasOne(x => x.Avatar)
-                    .WithOne(x => x.AvatarEmployee);
-            });
-
             modelBuilder.Entity<Answer>(entity =>
             {
                 entity.ToTable("Answer");
