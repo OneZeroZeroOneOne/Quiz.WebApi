@@ -9,17 +9,17 @@ namespace Tests.WebApi.Dal.Out
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string Position { get; set; }
-        public string Email { get; set; }
+        public string? Position { get; set; }
+        public string? Email { get; set; }
         public string SurName { get; set; }
         public string Phone { get; set; }
         public int Salary { get; set; }
         public string SotialNetworks { get; set; }
         public int? AvatarId { get; set; }
         public string? AvatarPath { get; set; }
-        public string Address { get; set; }
-        public string Resume { get; set; }
-        public string ResumePath { get; set; }
+        public string? Address { get; set; }
+        public string? Resume { get; set; }
+        public string? ResumePath { get; set; }
         public List<OutQuizViewModel> Quizzes {get; set;}
     }
 }
