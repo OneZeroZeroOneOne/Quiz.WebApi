@@ -115,17 +115,20 @@ namespace Tests.WebApi.Bll.Services
             }
 
             Employee emp = await _context.Employee
-                .Include(x => x.Avatar)
-                .Include(x => x.Resume)
                 .FirstOrDefaultAsync(x => x.Id == empId);
 
             _mapper.Map(editEmp, emp);
 
             emp.UserEmployees = new List<UserEmployee> { userEmployee };
+            emp.Avatar = await _context.Avatar.FirstOrDefaultAsync(x => x.Id == editEmp.AvatarId);
+            emp.Resume = await _context.Resume.FirstOrDefaultAsync(x => x.Id == editEmp.ResumeId);
 
             await _context.SaveChangesAsync();
 
-            return emp;
+            return await _context.Employee
+                .Include(x => x.Avatar)
+                .Include(x => x.Resume)
+                .FirstOrDefaultAsync(x => x.Id == empId); 
         }
     }
 }
