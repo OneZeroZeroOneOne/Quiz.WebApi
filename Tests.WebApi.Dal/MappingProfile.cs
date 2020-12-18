@@ -17,7 +17,8 @@ namespace Tests.WebApi.Dal
             CreateMap<Employee, OutEmployeeViewModel>().ForMember(x => x.Quizzes,
                 x => x.MapFrom(y => y.UserQuizzes.ToList().Select(t => t.Quiz)))
                 .ForMember(x => x.AvatarPath, x => x.MapFrom(y => y.Avatar.Path))
-                .ForMember(x => x.ResumePath, x => x.MapFrom(y => y.Resume.Path));
+                .ForMember(x => x.ResumePath, x => x.MapFrom(y => y.Resume.Path))
+                .ForMember(x => x.ResumeName, x => x.MapFrom(y => y.Resume.Name));
 
             CreateMap<Employee, Employee>()
                 .ForMember(x => x.Id, x => x.MapFrom((y, yy) => yy.Id));
