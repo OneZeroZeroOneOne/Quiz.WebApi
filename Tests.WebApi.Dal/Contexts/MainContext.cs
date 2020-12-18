@@ -14,6 +14,7 @@ namespace Tests.WebApi.Dal.Contexts
         }
 
         public virtual DbSet<Avatar> Avatar { get; set; }
+        public virtual DbSet<Resume> Resume { get; set; }
         public virtual DbSet<Answer> Answer { get; set; }
         public virtual DbSet<AnswerTamplate> AnswerTamplate { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
@@ -48,6 +49,11 @@ namespace Tests.WebApi.Dal.Contexts
             modelBuilder.HasAnnotation("Relational:Collation", "C.UTF-8");
 
             modelBuilder.Entity<Avatar>(en =>
+            {
+                en.HasKey(x => x.Id);
+            });
+
+            modelBuilder.Entity<Resume>(en =>
             {
                 en.HasKey(x => x.Id);
             });

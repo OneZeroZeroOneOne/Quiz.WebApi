@@ -11,12 +11,12 @@ namespace Tests.WebApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AvatarController : ControllerBase
+    public class ResumeController : ControllerBase
     {
         private readonly AttachmentPathProvider _attachmentPathProvider;
         private readonly MainContext _context;
 
-        public AvatarController(MainContext context, AttachmentPathProvider attachmentPathProvider)
+        public ResumeController(MainContext context, AttachmentPathProvider attachmentPathProvider)
         {
             _context = context;
             _attachmentPathProvider = attachmentPathProvider;
@@ -34,7 +34,7 @@ namespace Tests.WebApi.Controllers
                 await uploadedFile.CopyToAsync(fileStream);
             }
 
-            Avatar file = new Avatar { Path = "Files/" + fileName + ext,  Name = uploadedFile.FileName };
+            var file = new Resume { Path = "Files/" + fileName + ext, Name = uploadedFile.FileName };
 
             _context.Add(file);
 

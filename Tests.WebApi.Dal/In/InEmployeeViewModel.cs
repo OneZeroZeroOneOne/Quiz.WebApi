@@ -15,7 +15,6 @@ namespace Tests.WebApi.Dal.In
         public string? SotialNetworks { get; set; }
         public int? AvatarId { get; set; }
         public string? Adress { get; set; }
-        public string? Resume { get; set; }
-
+        public int? ResumeId { get; set; }
     }
 }

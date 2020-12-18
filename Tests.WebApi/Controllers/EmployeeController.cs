@@ -26,29 +26,19 @@ namespace Tests.WebApi.Controllers
         [HttpGet]
         [Authorize(Policy = "ClientAdmin")]
         [Route("{id}")]
-        public async Task<OutEmployeeViewModel> GetEmployee(int id)
+        public async Task<OutEmployeeViewModel?> GetEmployee(int id)
         {
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
-            Employee emp = await _employeeService.GetEmployee(id, authorizedUserModel.Id);
-            if (emp != null)
-            {
-                return _mapperProfile.Map<OutEmployeeViewModel>(emp);
-            }
-            return null;
+            var emp = await _employeeService.GetEmployee(id, authorizedUserModel.Id);
+            return emp != null ? _mapperProfile.Map<OutEmployeeViewModel>(emp) : null;
         }
 
         [HttpGet]
         [Authorize(Policy = "ClientAdmin")]
-        public async Task<List<OutEmployeeViewModel>> GetEmployees([FromQuery]int? quizStatusId = null)
+        public async Task<List<OutEmployeeViewModel>> GetEmployees([FromQuery]int? quizStatusId = null, [FromQuery]bool? isCandidate = null)
         {
             AuthorizedUserModel authorizedUserModel = (AuthorizedUserModel)HttpContext.User.Identity;
-            List<Employee> emps = await _employeeService.GetEmployees(authorizedUserModel.Id, quizStatusId);
-            if (emps != null)
-            {
-                return _mapperProfile.Map<List<OutEmployeeViewModel>>(emps);
-            }
-            return new List<OutEmployeeViewModel>();
-            
+            return _mapperProfile.Map<List<OutEmployeeViewModel>>(await _employeeService.GetEmployees(authorizedUserModel.Id, quizStatusId, isCandidate));
         }
 
         [HttpPost]

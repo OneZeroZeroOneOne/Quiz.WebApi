@@ -18,7 +18,7 @@ namespace Tests.WebApi.Dal.Out
         public int? AvatarId { get; set; }
         public string? AvatarPath { get; set; }
         public string? Address { get; set; }
-        public string? Resume { get; set; }
+        public int? ResumeId { get; set; }
         public string? ResumePath { get; set; }
         public List<OutQuizViewModel> Quizzes {get; set;}
     }

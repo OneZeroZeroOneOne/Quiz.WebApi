@@ -14,5 +14,6 @@
         SubscriptionNotFound = 10,
         ExceededMaximumTests = 11,
         AvatarRecordDoesntExist = 12,
+        ResumeRecordDoesntExist = 13,
     }
 }
