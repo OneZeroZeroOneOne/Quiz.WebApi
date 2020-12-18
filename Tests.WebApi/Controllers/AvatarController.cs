@@ -27,8 +27,6 @@ namespace Tests.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFile(IFormFile uploadedFile)
         {
-            if (uploadedFile == null) return BadRequest(new { Error = "File must be not null" });
-
             var ext = Path.GetExtension(uploadedFile.FileName);
             var fileName = DateTime.UtcNow.ToFileTimeUtc();
 
