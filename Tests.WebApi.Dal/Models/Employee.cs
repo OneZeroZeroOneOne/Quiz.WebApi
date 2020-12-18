@@ -24,7 +24,6 @@ namespace Tests.WebApi.Dal.Models
         public string Phone { get; set; }
         public int? Salary { get; set; }
         public string SotialNetworks { get; set; }
-        public string Avatar { get; set; }
         public string Adress { get; set; }
         public string Resume { get; set; }
         public bool? IsCandidate { get; set; }
@@ -32,5 +31,7 @@ namespace Tests.WebApi.Dal.Models
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         public virtual ICollection<UserEmployee> UserEmployees { get; set; }
         public virtual ICollection<UserQuiz> UserQuizzes { get; set; }
+
+        public virtual AvatarEmployee Avatar { get; set; }
     }
 }

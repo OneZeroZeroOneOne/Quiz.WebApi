@@ -1,24 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using Tests.WebApi.Dal.Models;
 
 #nullable disable
 
-namespace Tests.WebApi.Contexts
+namespace Tests.WebApi.Dal.Contexts
 {
     public partial class MainContext : DbContext
     {
-        public string _connectionString;
+        private readonly string _connectionString;
         public MainContext(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public MainContext(string connectionString, DbContextOptions<MainContext> options)
-            : base(options)
-        {
-        }
-
+        public virtual DbSet<Avatar> Avatar { get; set; }
         public virtual DbSet<Answer> Answer { get; set; }
         public virtual DbSet<AnswerTamplate> AnswerTamplate { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
@@ -51,6 +46,22 @@ namespace Tests.WebApi.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "C.UTF-8");
+
+            modelBuilder.Entity<Avatar>(en =>
+            {
+                en.HasKey(x => x.Id);
+            });
+
+            modelBuilder.Entity<AvatarEmployee>(en =>
+            {
+                en.HasKey(x => new {x.AvatarId, x.EmployeeId});
+
+                en.HasOne(x => x.Employee)
+                    .WithOne(x => x.Avatar);
+
+                en.HasOne(x => x.Avatar)
+                    .WithOne(x => x.AvatarEmployee);
+            });
 
             modelBuilder.Entity<Answer>(entity =>
             {

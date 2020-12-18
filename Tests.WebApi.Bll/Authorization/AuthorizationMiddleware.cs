@@ -10,7 +10,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Tests.WebApi.Bll.Options;
-using Tests.WebApi.Contexts;
+using Tests.WebApi.Dal.Contexts;
 using Tests.WebApi.Utilities.Exceptions;
 
 namespace Tests.WebApi.Bll.Authorization
