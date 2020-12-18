@@ -3,18 +3,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Tests.WebApi.Bll.Authorization;
 using Tests.WebApi.Bll.Options;
 using Tests.WebApi.Bll.Services;
-using Tests.WebApi.Contexts;
 using Tests.WebApi.Dal;
+using Tests.WebApi.Dal.Contexts;
 using Tests.WebApi.Dal.Models;
 using Tests.WebApi.Utilities.Middlewares;
 
@@ -33,9 +36,7 @@ namespace Tests.WebApi
         {
             services.AddControllers();
 
-            MainContext context = new MainContext(Environment.GetEnvironmentVariable("DATABASECONNECTIONSTRING"));
 
-            services.AddScoped(x => new MainContext(Environment.GetEnvironmentVariable("DATABASECONNECTIONSTRING")));
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -47,22 +48,28 @@ namespace Tests.WebApi
 
             JwtOptions jwtOption = context.JwtOptions.FirstOrDefault();
 
+            if (jwtOption == null) throw new ApplicationException("Can't configure authorize jwt options");
+
             AuthOption.SetAuthOption(jwtOption.Issuer, jwtOption.Audience, jwtOption.Key, jwtOption.Lifetime);
 
             List<Role> roleList = context.Role.ToList();
-            for (int i = 0; i < roleList.Count; i++)
+            foreach (var t in roleList)
             {
-                int id = roleList[i].Id;
-                string title = roleList[i].Title;
                 services.AddAuthorization(options =>
                 {
-                    options.AddPolicy(title, policy =>
-                        policy.Requirements.Add(new RoleEntryRequirement(id)));
+                    options.AddPolicy(t.Title, policy =>
+                        policy.Requirements.Add(new RoleEntryRequirement(t.Id)));
                 });
             }
             services.AddSingleton<IAuthorizationHandler, RoleEntryHandler>();
 
             services.AddTransient<EmployeeService>();
+            services.AddScoped(x =>
+            {
+                var a = new AttachmentPathProvider();
+                a.ConfigurePath();
+                return a;
+            });
 
             services.AddTransient<QuizService>();
             services.AddSwaggerGen(c =>
@@ -121,13 +128,9 @@ namespace Tests.WebApi
                             ValidateIssuerSigningKey = true,
                         };
                     });
-
-            
-            
-
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AttachmentPathProvider attachmentPathProvider)
         {
             if (env.IsDevelopment())
             {
@@ -136,7 +139,11 @@ namespace Tests.WebApi
 
             app.ConfigureCustomExceptionMiddleware();
 
-            
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(attachmentPathProvider.GetPath(), "Files")),
+                RequestPath = new PathString("/Files")
+            });
 
             app.UseCors(x => x.AllowAnyOrigin());
             app.UseCors(x => x.AllowAnyHeader());
