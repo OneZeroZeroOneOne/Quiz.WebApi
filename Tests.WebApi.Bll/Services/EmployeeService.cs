@@ -42,6 +42,7 @@ namespace Tests.WebApi.Bll.Services
                 .Include(x => x.Employee)
                 .ThenInclude(x => x.UserQuizzes).ThenInclude(x => x.Quiz).ThenInclude(x => x.Status)
                 .Include(x => x.Employee.Avatar)
+                .Include(x => x.Employee.Resume)
                 .Select(x => x.Employee);
 
             if (quizStatusId != null)
