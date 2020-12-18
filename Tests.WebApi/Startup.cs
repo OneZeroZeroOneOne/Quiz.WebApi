@@ -36,7 +36,9 @@ namespace Tests.WebApi
         {
             services.AddControllers();
 
+            MainContext context = new MainContext(Environment.GetEnvironmentVariable("DATABASECONNECTIONSTRING"));
 
+            services.AddScoped(x => new MainContext(Environment.GetEnvironmentVariable("DATABASECONNECTIONSTRING")));
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
